@@ -1,0 +1,14 @@
+.student__info {
+    display: flex;
+    flex-direction: column;
+
+    width: 50%;
+
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 430px){
+    .student__info {
+        width: 100%;
+    }
+}

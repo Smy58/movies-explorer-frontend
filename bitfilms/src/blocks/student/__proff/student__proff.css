@@ -1,0 +1,20 @@
+.student__proff {
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 20px;
+
+    margin: 0;
+
+    margin-bottom: 26px;
+}
+
+@media screen and (max-width: 430px){
+    .student__proff {
+        font-size: 11px;
+        line-height: 16px;
+
+        margin-bottom: 20px;
+    }
+}

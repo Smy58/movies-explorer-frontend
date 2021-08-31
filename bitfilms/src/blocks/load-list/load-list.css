@@ -1,0 +1,17 @@
+.load-list {
+    width: 90%;
+    height: 36px;
+    border-width: 0;
+    outline: none;
+    background-color: #F9F9F9;
+    border-radius: 6px;
+
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+
+    margin-top: 50px;
+    margin-bottom: 80px;
+}

@@ -1,0 +1,19 @@
+.student__card {
+    margin-top: 66px;
+
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+
+    margin-bottom: 100px;
+}
+
+@media screen and (max-width: 430px){
+    .student__card {
+        flex-direction: column-reverse;
+        margin-top: 60px;
+        margin-bottom: 69x;
+    }
+}

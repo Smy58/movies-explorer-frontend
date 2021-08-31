@@ -1,0 +1,20 @@
+.student__title {
+    width: 90%;
+
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 27px;
+
+    margin-top: 110px;
+    margin-bottom: 23px;
+}
+
+@media screen and (max-width: 430px){
+    .student__title {
+        margin-top: 70px;
+        font-size: 18px;
+        line-height: 22px;
+    }
+}

@@ -1,0 +1,26 @@
+.form__input {
+    border: none;
+
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 11px;
+    line-height: 13px;
+
+    text-align: right;
+
+    outline: none;
+}
+
+.form_type_register .form__input, .form_type_login .form__input {
+    text-align: left;
+    margin-top: 5px;
+    padding: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E8E8E8;
+    margin-bottom: 24px;
+}
+
+.form__input:focus {
+    border-bottom-color: #2BE080;
+}

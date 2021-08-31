@@ -1,0 +1,10 @@
+.about__text {
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+
+    margin: 0;
+}

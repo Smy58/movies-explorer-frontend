@@ -1,0 +1,17 @@
+.hero__nav-link {
+    color: white;
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: left;
+
+    text-decoration: none;
+
+    margin-left: 16px;
+}
+
+.hero__nav-link:hover {
+    opacity: 0.8;
+}

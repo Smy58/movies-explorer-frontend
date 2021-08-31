@@ -1,0 +1,16 @@
+.back-button {
+    outline: none;
+    border: none;
+    background-color: transparent;
+
+
+    color: #2BE080;
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    cursor: pointer;
+
+    margin-top: 184px;
+}

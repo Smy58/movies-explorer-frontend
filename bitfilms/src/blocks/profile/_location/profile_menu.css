@@ -1,0 +1,6 @@
+.profile_menu {
+    display: flex;
+    margin-right: 0;
+    position: absolute;
+    bottom: 48px;
+}

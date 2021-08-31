@@ -1,0 +1,9 @@
+.card__save-icon {
+    background-image: url(./../../../images/save-btn.svg);
+    width: 10px;
+    height: 14px;
+}
+
+.card__save-button_saved .card__save-icon {
+    background-image: url(./../../../images/save-btn-saved.svg);
+}

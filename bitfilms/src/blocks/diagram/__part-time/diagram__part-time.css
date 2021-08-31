@@ -1,0 +1,22 @@
+.diagram__part_back .diagram__part-time {
+    background-color: #2BE080;
+}
+
+.diagram__part_front .diagram__part-time {
+    background-color: #F2F2F2;
+}
+
+.diagram__part-time {
+    height: 36px;
+
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

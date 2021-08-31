@@ -1,0 +1,14 @@
+.search__block {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    align-items: center;
+    margin-top: 80px;
+}
+
+@media screen and (max-width: 430px){
+    .search__block {
+        flex-direction: column;
+        width: 95%;
+    }
+}

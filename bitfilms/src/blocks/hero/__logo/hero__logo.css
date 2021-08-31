@@ -1,0 +1,9 @@
+.hero__logo {
+    margin-left: 70px;
+}
+
+@media screen and (max-width: 430px){
+    .hero__logo {
+        margin-left: 14px;
+    }
+}

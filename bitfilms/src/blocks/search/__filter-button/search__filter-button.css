@@ -1,0 +1,33 @@
+.search__filter-button {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    appearance: none;
+    background-color: #ececec;
+    outline: none;
+    border-radius: 20px;
+    transition: .5s;
+
+    margin-left: 14px;
+}
+
+.search__filter-button:checked {
+    background-color: #2BE080;
+}
+
+.search__filter-button:before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 9px;
+    top: 2px;
+    left: 2px;
+    background-color: white;
+    transition: .5s;
+}
+
+.search__filter-button:checked:before{
+    top: 2px;
+    left: 17px;
+}
