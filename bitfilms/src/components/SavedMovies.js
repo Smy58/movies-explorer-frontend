@@ -6,7 +6,7 @@ function SavedMovies() {
     return (
         <>
             <SearchForm/>
-            <MoviesCardList/>
+            <MoviesCardList type={'card__unsave-icon'}/>
         </>
     );
 }

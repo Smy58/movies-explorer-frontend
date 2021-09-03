@@ -3,10 +3,11 @@ import MoviesCardList from './MoviesCardList';
 import SearchForm from './SearchForm';
 
 function Movies() {
+
     return (
         <>
             <SearchForm/>
-            <MoviesCardList/>
+            <MoviesCardList type={'card__save-icon'}/>
             
         </>
     );

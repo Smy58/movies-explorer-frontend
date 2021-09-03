@@ -1,18 +1,18 @@
 import React from 'react';
 import MoviesCard from './MoviesCard';
 
-function MoviesCardList() {
+function MoviesCardList(props) {
     return (
         <>
         <div class="cards">
-            <MoviesCard/>
-            <MoviesCard/>
-            <MoviesCard/>
-            <MoviesCard/>
-            <MoviesCard/>
-            <MoviesCard/>
-            <MoviesCard/>
-            <MoviesCard/>
+            <MoviesCard type={props.type}/>
+            <MoviesCard type={props.type}/>
+            <MoviesCard type={props.type}/>
+            <MoviesCard type={props.type}/>
+            <MoviesCard type={props.type}/>
+            <MoviesCard type={props.type}/>
+            <MoviesCard type={props.type}/>
+            <MoviesCard type={props.type}/>
         </div>
 
         <button class="load-list">Ещё</button>

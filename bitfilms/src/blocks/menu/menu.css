@@ -8,8 +8,16 @@
     bottom: 0;
     z-index: 100;
     transition: right 0.5s;
+
+    display: none;
 }
 
 .menu_opened {
     right: -100%;
+}
+
+@media screen and (max-width: 600px){
+    .menu {
+        display: block;
+    }
 }

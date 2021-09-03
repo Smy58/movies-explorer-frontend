@@ -10,7 +10,3 @@
     font-size: 14px;
     line-height: 18px;
 }
-
-.search__input:focus{
-    outline: none;
-}
