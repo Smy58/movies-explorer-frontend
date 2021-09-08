@@ -1,0 +1,9 @@
+.navigation {
+    margin-left: 44px;
+}
+
+@media screen and (max-width: 600px){
+    .navigation {
+        display: none;
+    }
+}

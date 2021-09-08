@@ -1,0 +1,10 @@
+.login-header__title {
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 29px;
+
+    margin: 0;
+    margin-top: 40px;
+}

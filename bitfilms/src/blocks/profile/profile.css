@@ -1,0 +1,14 @@
+.profile {
+    margin-right: 70px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+}
+
+@media screen and (max-width: 600px){
+    .profile {
+        display: none;
+    }
+}

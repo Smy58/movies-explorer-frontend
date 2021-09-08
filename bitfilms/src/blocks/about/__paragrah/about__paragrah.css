@@ -1,0 +1,15 @@
+.about__paragrah {
+    margin-top: 70px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+
+    margin-bottom: 110px;
+}
+
+@media screen and (max-width: 430px){
+    .about__paragrah {
+        flex-direction: column;
+        margin-bottom: 60px;
+    }
+}

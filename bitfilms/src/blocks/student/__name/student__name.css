@@ -1,0 +1,19 @@
+.student__name {
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 50px;
+    line-height: 58px;
+
+    margin: 0;
+
+    margin-bottom: 18px;
+}
+
+@media screen and (max-width: 430px){
+    .student__name {
+        margin-top: 40px;
+        font-size: 30px;
+        line-height: 36px;
+    }
+}

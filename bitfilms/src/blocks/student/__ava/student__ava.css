@@ -1,0 +1,10 @@
+.student__ava {
+    width: 255px;
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 570px){
+    .student__ava {
+        width: 292px;
+    }
+}

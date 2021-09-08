@@ -1,0 +1,34 @@
+.tech__element {
+    width: 90px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: #E8E8E8;
+
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+
+    border-radius: 10px;
+
+    margin-right: 10px;
+}
+
+.tech__element:last-of-type {
+    margin: 0;
+}
+
+@media screen and (max-width: 430px){
+    .tech__element {
+        width: 84px;
+        height: 57px;
+
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}

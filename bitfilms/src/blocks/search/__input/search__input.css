@@ -1,0 +1,12 @@
+.search__input {
+    border: none;
+    width: 80%;
+
+    padding-left: 22px;
+
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+}

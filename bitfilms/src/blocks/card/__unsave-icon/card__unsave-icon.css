@@ -1,0 +1,5 @@
+.card__unsave-icon {
+    background-image: url(./../../../images/unsave-btn.svg);
+    width: 8px;
+    height: 8px;
+}

@@ -1,0 +1,16 @@
+.student__portfolio-name {
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 50px;
+
+    margin: 0;
+}
+
+@media screen and (max-width: 430px){
+    .student__portfolio-name {
+        font-size: 18px;
+        line-height: 28px;
+    }
+}

@@ -1,0 +1,16 @@
+.search__find-button {
+    border-width: 0;
+    height: 34px;
+    width: 34px;
+    border-radius: 48px;
+    background-color: #2BE080;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 7px;
+}
+
+.search__find-button:hover {
+    opacity: 0.8;
+}

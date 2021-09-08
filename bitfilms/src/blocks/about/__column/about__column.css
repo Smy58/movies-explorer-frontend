@@ -1,0 +1,15 @@
+.about__column {
+    display: flex;
+    flex-direction: column;
+
+}
+
+@media screen and (max-width: 430px){
+    .about__column {
+        margin-bottom: 56px;
+    }
+
+    .about__column:last-of-type {
+        margin-bottom: 0;
+    }
+}

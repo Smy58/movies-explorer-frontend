@@ -1,0 +1,15 @@
+.tech__elements {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 100px;
+}
+
+@media screen and (max-width: 700px){
+    .tech__elements {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        width: 60%;
+        margin-bottom: 60px;
+    }
+}

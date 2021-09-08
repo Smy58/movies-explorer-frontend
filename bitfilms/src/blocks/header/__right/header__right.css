@@ -1,0 +1,9 @@
+.header__right {
+    display: none;
+}
+
+@media screen and (max-width: 600px){
+    .header__right {
+        display: block;
+    }
+}

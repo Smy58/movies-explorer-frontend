@@ -1,0 +1,12 @@
+.search__line {
+    height: 0;
+    width: 85%;
+    border: 1px solid rgb(170, 170, 170, 0.2);
+    margin-top: 83px;
+}
+
+@media screen and (max-width: 430px){
+    .search__line {
+        margin-top: 43px;
+    }
+}

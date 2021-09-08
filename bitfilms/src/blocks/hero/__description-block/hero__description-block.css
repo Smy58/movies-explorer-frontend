@@ -1,0 +1,9 @@
+.hero__description-block {
+    height: 524px;
+    background-color: #5C5C5C;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
