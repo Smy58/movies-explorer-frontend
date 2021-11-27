@@ -22,7 +22,7 @@ function Header(props) {
             </Link>
             <div className="header__right">
                 <button className="header__menu-button" onClick={props.onMenu}>
-                    <img src={menuLogo}></img>
+                    <img src={menuLogo} alt="Лого меню"></img>
                 </button>
             </div>
         </header>

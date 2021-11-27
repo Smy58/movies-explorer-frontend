@@ -6,12 +6,14 @@ import Techs from './Techs';
 
 function Main() {
     return (
-        <div className='page'>
-            <Promo/>
-            <AboutProject/>
-            <Techs/>
-            <AboutMe/>
-        </div>
+        <>
+            <div className='page'>
+                <Promo/>
+                <AboutProject/>
+                <Techs/>
+                <AboutMe/>
+            </div>
+        </>
     );
 }
 

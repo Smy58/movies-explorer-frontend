@@ -1,25 +1,40 @@
 import React from 'react';
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Profile() {
+function Profile(props) {
+
+    const userInfo = React.useContext(CurrentUserContext);
+    console.log(userInfo);
+
+    function logout() {
+        props.exit();
+    }
+
+    /* function patchProfile(e) {
+        e.preventDefault();
+        props.editProfile(userName, email)
+        setIdenticalValues(false)
+      }*/
+
     return (
-        <div class="redactor-form">
-            <h2 class="redactor-form__title">Привет, Виталий!</h2>
-            <form action="" class="form form_type_redactor">
-                <fieldset class="form__fieldset">
-                    <label for="name" class="form__label">
-                        <p class="form__option">Имя</p>
-                        <input type="text" name="name" id="name" class="form__input" value="Виталий"></input>
+        <div className="redactor-form">
+            <h2 className="redactor-form__title">{`Привет, ${userInfo.data ? userInfo.data.name : ''}`}</h2>
+            <form action="" className="form form_type_redactor">
+                <fieldset className="form__fieldset">
+                    <label className="form__label">
+                        <p className="form__option">Имя</p>
+                        <input type="text" name="name" id="name" className="form__input" defaultValue={userInfo.data ? userInfo.data.name : ''}></input>
                     </label>
-                    <div class="form__line"></div>
-                    <label for="email" class="form__label">
-                        <p class="form__option">E-mail</p>
-                        <input type="text" name="email" id="email" class="form__input" value="28092001i@gmail.com"></input>
+                    <div className="form__line"></div>
+                    <label className="form__label">
+                        <p className="form__option">E-mail</p>
+                        <input type="text" name="email" id="email" className="form__input" defaultValue={userInfo.data ? userInfo.data.email : ''}></input>
                     </label>
-                    <button class="form__submit" type="submit">Редактировать</button>
+                    <button className="form__submit" type="submit">Редактировать</button>
 
                 </fieldset>
             </form>
-            <button class="redactor-form__logout">Выйти из аккаунта</button>
+            <button className="redactor-form__logout" onClick={logout}>Выйти из аккаунта</button>
         </div>
     );
 }

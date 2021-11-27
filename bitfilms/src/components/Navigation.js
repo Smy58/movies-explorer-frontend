@@ -13,7 +13,7 @@ function Navigation(props) {
             </div>
             <div className={`menu ${props.isOpen ? 'menu_opened' : ''}`}>
                 <button className="menu__colse-icon" onClick={props.onMenu}>
-                    <img src={menuClose}></img>
+                    <img src={menuClose} alt="Закрыть меню"></img>
                 </button>
                 <div className="menu__links">
                     <Link to="/" className="menu__link">Главная</Link>
