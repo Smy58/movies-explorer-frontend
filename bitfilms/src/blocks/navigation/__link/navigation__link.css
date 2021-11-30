@@ -15,3 +15,7 @@
 .navigation__link:first-of-type {
     margin-left: 0;
 }
+
+.navigation__link_main-page{
+    color: white;
+}

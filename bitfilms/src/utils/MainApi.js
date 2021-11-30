@@ -1,6 +1,7 @@
-export const BASE_URL = 'http://bitfilms.api.nomoredomains.monster';
+export const BASE_URL = 'https://bitfilms.api.nomoredomains.monster';
 
 export function patchUserInfo({ name, email }) {
+    console.log("! " + name + " " + email);
     return fetch(`${BASE_URL}/users/me`, {
         method: "PATCH",
         credentials: "include",
@@ -10,12 +11,10 @@ export function patchUserInfo({ name, email }) {
             authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: JSON.stringify({
-            name: name,
-            email: email,
+            name,
+            email,
         }),
     }).then((res) => {
         return res.json();
-    }).catch((err) => {
-      console.log(`Ошибка регистрации ${err}`);
-    });
+    })
 }

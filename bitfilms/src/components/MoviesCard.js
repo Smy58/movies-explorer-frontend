@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 function MoviesCard(props) {
     const [isSaved, setSaved] = React.useState(props.movie.like);
@@ -23,9 +22,9 @@ function MoviesCard(props) {
                     <div className={props.type}></div>
                 </button>
             </div>
-            <Link to={props.movie.trailerLink == null ? 'no links' : props.movie.trailerLink}>
+            <a href={props.movie.trailerLink == null ? 'no links' : props.movie.trailerLink}>
                 <img src={props.movie.image.url ? 'https://api.nomoreparties.co' + props.movie.image.url : props.movie.image} alt="Карточка изображения" className="card__image"></img>
-            </Link>
+            </a>
         </div>
     );
 }

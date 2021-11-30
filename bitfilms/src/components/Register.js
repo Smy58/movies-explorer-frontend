@@ -29,16 +29,7 @@ class Register extends React.Component{
     handleSubmit = (e) => {
         e.preventDefault();
         console.log(this.state.password + " " + this.state.email + " " + this.state.name);
-        auth.register(this.state.password, this.state.email, this.state.name).then((res) => {
-          console.log(res);
-          if(!res.error){
-            this.props.history.push('/signin');
-            this.props.onRegistered(true);
-          }else{        
-            this.props.onRegistered(false);
-          }
-          this.props.onInfoTooltip();
-        });
+        this.props.onRegistered(this.state.name, this.state.email, this.state.password);
     }
 
     render() {

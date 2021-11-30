@@ -7,24 +7,25 @@ import Profile from './Profile';
 import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
 import InfoTooltip from './InfoTooltip';
+import NotFound from './NotFound';
 
 import apiMovies from '../utils/MoviesApi';
 
 import * as auth from '../utils/auth';
 import { patchUserInfo } from '../utils/MainApi';
-import { handleFilter, handleIdFilter } from '../utils/filter';
+import { handleIdFilter } from '../utils/filter';
 
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { Route, Switch, useHistory, useLocation, Redirect } from 'react-router-dom';
 import SavedMovies from './SavedMovies';
 import Login from './Login';
 
 function App() {
   const [isMenuOpen, setMenuOpen] = React.useState(false);
-  const [loggedIn, setLoggedIn] = React.useState(true);
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({name:""});
-  const [isRegistered, setRegistered] = React.useState(false);
+  const [isOK, setOK] = React.useState(false);
   const [isInfoTooltip, setInfoTooltip] = React.useState(false);
 
   const [moviesNumber, setMoviesNumber] = React.useState(null);
@@ -42,8 +43,12 @@ function App() {
   const [moviesList, setMoviesList] = React.useState([]);
   const [savedMovies, setSavedMovies] = React.useState([]);
 
+  const [messageError, setMessageError] = React.useState("");
+  const [goodMessage, setGoodMessage] = React.useState("");
+
   const history = useHistory();
   const location = useLocation();
+  const userInfo = React.useContext(CurrentUserContext);
 
   React.useEffect(() => {
 
@@ -53,9 +58,9 @@ function App() {
         console.log(token);
         // проверяем токен пользователя
         auth.checkToken(token).then((res) => {
-          console.log(res.data);
+          
           setCurrentUser(res);
-          console.log(currentUser)
+          console.log(currentUser);
           if (res.data){
             //console.log(res.data.email);
             // если есть цель, добавляем её в стейт
@@ -65,7 +70,8 @@ function App() {
 
           }
           //console.log(loggedIn + " 3");
-        }); 
+        })
+        .catch((err) => console.log(err));
       }
     }
 
@@ -77,9 +83,43 @@ function App() {
     setInfoTooltip(false);
   }
 
-  function handleRegistered(reg){
-    console.log(reg);
-    setRegistered(reg);
+  function handleRegistered(name, email, password){
+    auth.register(password, email, name)
+      .then((res) => {
+        console.log(res);
+        if(!res.error){
+          setOK(true);
+          auth.authorize(email, password)
+              .then((data) => {
+                  //console.log(data.message);
+                  if (!data.message){
+                    setOK(true);
+                    setGoodMessage("Вы успешно зарегистрировались!")
+                    handleLogin();
+                    history.push('/movies');
+                  }else{
+                    setOK(false);
+                    handleInfoTooltip();
+                  }
+              })
+              .catch(err => console.log(err));
+        }else{        
+          setOK(false);
+        }
+        handleInfoTooltip();
+      })
+      .catch((err) => {
+        console.log(err);
+        setOK(false);
+        if(err.status === "409"){
+          setMessageError("Ошибка! Пользователь с таким email уже существует");
+        } else if (err.status === "400") {
+          setMessageError(`Ошибка! Введите корректные данные`);
+        } else {
+          setMessageError(`Ошибка при регистрации`);
+        }
+        handleInfoTooltip();
+      });
   }
 
   function handleMenuClick(e) {
@@ -100,7 +140,8 @@ function App() {
   }
 
   function goToMainPage(){
-    if(history.location.pathname === "/"){
+    console.log(history.location.pathname);
+    if(history.location.pathname !== "/"){
       history.push('/movies');
     }
   }
@@ -219,6 +260,11 @@ function App() {
       if (item.nameRU.toLowerCase().includes(value.toLowerCase()))
         result.push(item);
     });
+    if (result.length === 0) {
+      setOK(false);
+      setMessageError("Ничего не найдено 0_о");
+      handleInfoTooltip();
+    }
     return result;
   }
 
@@ -299,10 +345,20 @@ function App() {
     }
   }
 
+
   function editProfile(name, email) {
     patchUserInfo({ name, email })
       .then((res) => {
         setCurrentUser(res);
+        setOK(true);
+        setGoodMessage("Данные обновлены");
+        handleInfoTooltip();
+      })
+      .catch((err) => {
+        setOK(true);
+        setGoodMessage("Ошибка обновления");
+        handleInfoTooltip();
+        console.log(`Ошибка обновления ${err}`);
       });
   }
 
@@ -318,6 +374,12 @@ function App() {
 
       apiMovies.getSaveMovies()
         .then((res) => {
+          let nf = [];
+          
+          res.data.map(item => (
+            item.owner === currentUser.data._id ? nf = [ ...nf, item] : ""
+          ));
+          res.data = nf;
           localStorage.setItem("savedMovies", JSON.stringify(res));
           //console.log(res);
           //console.log(JSON.parse(localStorage.getItem("savedMovies")));
@@ -374,17 +436,27 @@ function App() {
 
   }, [toggleLike]);
 
+  React.useEffect(() => {
+
+  }, [currentUser]);
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Switch>
-          <ProtectedRoute exact path="/" loggedIn={loggedIn} 
-          render={() =>(
-            <>
-              <Main />
-              <Footer />
-            </>
-          )} />
+          <Route exact path="/">
+              <>
+                {loggedIn ? (
+                  <>
+                    <Header isOpen={isMenuOpen} onMenu={handleMenuClick} mainMenu={true} history={history}/>
+                    <Main loggedIn={loggedIn}/>
+                  </>
+                ) : (
+                  <Main loggedIn={loggedIn}/>
+                )}
+                <Footer />
+              </>
+          </Route>
           
           <ProtectedRoute path="/movies" loggedIn={loggedIn}
           render={() =>(
@@ -415,21 +487,33 @@ function App() {
           render={() =>(
             <>
               <Header/>
-              <Profile exit={handleLogout} editProfile={editProfile}/>
+              <Profile exit={handleLogout} editProfile={editProfile} history={history}/>
             </>
           )} />
 
           <Route path="/signin">
-            <Login handleLogin={handleLogin} onRegistered={handleRegistered} onInfoTooltip={handleInfoTooltip} history={history}/>
+            {loggedIn ? (
+              <Redirect to="/" />
+            ) : (
+              <Login handleLogin={handleLogin} onRegistered={handleRegistered} onInfoTooltip={handleInfoTooltip} history={history}/>
+            )}
           </Route>
           
           <Route path="/signup">
-            <Register onInfoTooltip={handleInfoTooltip} onRegistered={handleRegistered} history={history}/>
+            {loggedIn ? (
+              <Redirect to="/" />
+            ) : (
+              <Register handleLogin={handleLogin} onInfoTooltip={handleInfoTooltip} onRegistered={handleRegistered} history={history}/>
+            )}
+          </Route>
+
+          <Route path="*">
+            <NotFound loggedIn={loggedIn} history={history}/>
           </Route>
 
         </Switch>
 
-        <InfoTooltip isRegistered={isRegistered} isOpen={isInfoTooltip} onClose={closeAllPopups} ></InfoTooltip>
+        <InfoTooltip isOK={isOK} isOpen={isInfoTooltip} onClose={closeAllPopups} message={messageError} goodMessage={goodMessage}></InfoTooltip>
 
       </div>
     </CurrentUserContext.Provider>

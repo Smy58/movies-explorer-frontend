@@ -30,7 +30,7 @@ class MoviesApi {
     getInitialCards(){
         return fetch(this._baseUrl, this._headersGet)
             .then(res => {
-                return res.ok ? res.json() : Promise.reject(`${res.status}`);
+                return res.ok ? res.json() : Promise.reject(res);
             });
     }
 
@@ -41,7 +41,7 @@ class MoviesApi {
         const trailer = movie.trailerLink;
         const thumbnail = `https://api.nomoreparties.co${movie.image.formats.thumbnail.url}`;
         const movieId = movie.id;
-        return fetch(`http://bitfilms.api.nomoredomains.monster/movies`, {
+        return fetch(`https://bitfilms.api.nomoredomains.monster/movies`, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -63,12 +63,12 @@ class MoviesApi {
             movieId,
           }),
         }).then((res) => {
-            return res.ok ? res.json() : Promise.reject(`${res.status}`);
+            return res.ok ? res.json() : Promise.reject(res);
         });
     }
 
     deleteSavedMovie = (movieId) => {
-        return fetch(`http://bitfilms.api.nomoredomains.monster/movies/${movieId}`, {
+        return fetch(`https://bitfilms.api.nomoredomains.monster/movies/${movieId}`, {
           method: "DELETE",
           credentials: "include",
           headers: {
@@ -77,12 +77,12 @@ class MoviesApi {
             authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }).then((res) => {
-            return res.ok ? res.json() : Promise.reject(`${res.status}`);
+            return res.ok ? res.json() : Promise.reject(res);
         });
     };
 
     getSaveMovies() {
-        return fetch(`http://bitfilms.api.nomoredomains.monster/movies`, {
+        return fetch(`https://bitfilms.api.nomoredomains.monster/movies`, {
           method: "GET",
           credentials: "include",
           headers: {
@@ -91,7 +91,7 @@ class MoviesApi {
             authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }).then((res) => {
-            return res.ok ? res.json() : Promise.reject(`${res.status}`);
+            return res.ok ? res.json() : Promise.reject(res);
         });
       }
     

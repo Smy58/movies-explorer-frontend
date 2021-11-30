@@ -1,6 +1,7 @@
-export const BASE_URL = 'http://bitfilms.api.nomoredomains.monster';
+export const BASE_URL = 'https://bitfilms.api.nomoredomains.monster';
 
 export const register = (password, email, name) => {
+  console.log("!!!");
   return fetch(`${BASE_URL}/signup`, {
     method: 'POST',
     headers: {
@@ -9,15 +10,10 @@ export const register = (password, email, name) => {
     },
     body: JSON.stringify({email, password, name})
   })
-  .then((response) => {
-    return response.json();
-  })
   .then((res) => {
-    const ress = res;
-    console.log(ress);
-    return ress;
+    console.log(res);
+    return res.ok ? res.json() : Promise.reject(res);
   })
-  .catch((err) => console.log(err));
 };
 
 export const authorize = (email, password) => {
@@ -37,8 +33,7 @@ export const authorize = (email, password) => {
     localStorage.setItem('email', email);
     
     return data;
-  })
-  .catch(err => console.log(err))
+  });
 };
 
 export const checkToken = (token) => {
@@ -52,5 +47,8 @@ export const checkToken = (token) => {
     }
   })
   .then(res => res.json())
-  .then(data => data)
+  .then(data => {
+    console.log(data);
+    return data;
+  });
 }

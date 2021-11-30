@@ -2,19 +2,23 @@ import React from 'react';
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Profile(props) {
-
     const userInfo = React.useContext(CurrentUserContext);
-    console.log(userInfo);
+    const [data, setData] = React.useState({name: (userInfo.data ? userInfo.data.name : ''), email: (userInfo.data ? userInfo.data.email : '')});
 
     function logout() {
         props.exit();
     }
 
-    /* function patchProfile(e) {
+    function handleChange (e) {
+        const {name, value} = e.target;
+        setData({ ...data, [name]: value });
+    }
+
+    function patchProfile(e) {
         e.preventDefault();
-        props.editProfile(userName, email)
-        setIdenticalValues(false)
-      }*/
+        
+        props.editProfile(data.name, data.email);
+    }
 
     return (
         <div className="redactor-form">
@@ -23,14 +27,14 @@ function Profile(props) {
                 <fieldset className="form__fieldset">
                     <label className="form__label">
                         <p className="form__option">Имя</p>
-                        <input type="text" name="name" id="name" className="form__input" defaultValue={userInfo.data ? userInfo.data.name : ''}></input>
+                        <input type="text" name="name" id="name" className="form__input" defaultValue={userInfo.data ? userInfo.data.name : ''} onChange={handleChange}></input>
                     </label>
                     <div className="form__line"></div>
                     <label className="form__label">
                         <p className="form__option">E-mail</p>
-                        <input type="text" name="email" id="email" className="form__input" defaultValue={userInfo.data ? userInfo.data.email : ''}></input>
+                        <input type="text" name="email" id="email" className="form__input" defaultValue={userInfo.data ? userInfo.data.email : ''} onChange={handleChange}></input>
                     </label>
-                    <button className="form__submit" type="submit">Редактировать</button>
+                    <button className="form__submit" type="submit" onClick={patchProfile}>Редактировать</button>
 
                 </fieldset>
             </form>
