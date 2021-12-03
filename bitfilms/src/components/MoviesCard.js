@@ -6,7 +6,8 @@ function MoviesCard(props) {
     //console.log(props.movie);
 
     function handleLikeClick(){
-        console.log(props.movie.like);
+        console.log(props.movie);
+        //console.log(props.movie.like);
         props.onLikeClick(props.movie);
         setSaved(!isSaved);
     }

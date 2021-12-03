@@ -1,4 +1,4 @@
-
+import { apiUrl, apiMoviesUrl } from '../constants/constants';
 
 class MoviesApi {
     constructor(options ){
@@ -41,7 +41,7 @@ class MoviesApi {
         const trailer = movie.trailerLink;
         const thumbnail = `https://api.nomoreparties.co${movie.image.formats.thumbnail.url}`;
         const movieId = movie.id;
-        return fetch(`https://bitfilms.api.nomoredomains.monster/movies`, {
+        return fetch(`${apiUrl}/movies`, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -68,7 +68,7 @@ class MoviesApi {
     }
 
     deleteSavedMovie = (movieId) => {
-        return fetch(`https://bitfilms.api.nomoredomains.monster/movies/${movieId}`, {
+        return fetch(`${apiUrl}/movies/${movieId}`, {
           method: "DELETE",
           credentials: "include",
           headers: {
@@ -82,7 +82,7 @@ class MoviesApi {
     };
 
     getSaveMovies() {
-        return fetch(`https://bitfilms.api.nomoredomains.monster/movies`, {
+        return fetch(`${apiUrl}/movies`, {
           method: "GET",
           credentials: "include",
           headers: {
@@ -98,9 +98,9 @@ class MoviesApi {
 }
 
 const apiMovies = new MoviesApi({
-    baseUrl: 'https://api.nomoreparties.co/beatfilm-movies',
+    baseUrl: apiMoviesUrl,
     headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
     }
 })

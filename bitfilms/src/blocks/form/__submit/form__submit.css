@@ -14,6 +14,30 @@
     margin-top: 220px;
 }
 
+.form__submit_disabled {
+    color: #A0A0A0;
+
+    border: none;
+    outline: none;
+    background-color: transparent;
+
+    font-family: Inter, "Arial", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 16px;
+
+    text-align: center;
+
+    margin-top: 220px;
+}
+
+.form_type_register .form__submit_disabled, .form_type_login .form__submit_disabled {
+    background-color: #A0A0A0;
+    color: white;
+    height: 45px;
+}
+
 .form_type_register .form__submit, .form_type_login .form__submit {
     background-color: #2BE080;
     color: white;
@@ -21,7 +45,7 @@
 }
 
 @media screen and (max-width: 780px){
-    .form__submit {
+    .form__submit, .form__submit_disabled {
         margin-top: 134px;
     }
 }

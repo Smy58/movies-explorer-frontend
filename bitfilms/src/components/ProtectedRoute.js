@@ -2,14 +2,25 @@ import React from 'react';
 import { Route, Redirect } from "react-router-dom";
 
 const ProtectedRoute = ({ component: Component, ...props  }) => {
-  //console.log(props.loggedIn);
 
   return (
     <Route>
+      
       {
-        () => !props.loggedIn ? <Redirect to="/" /> : props.render()
+      () => 
+        props.isCheckingToken ?
+          ""
+        :
+          // console.log(1)
+          !props.loggedIn ? <Redirect to="/" /> : props.render()
       }
+
     </Route>
 )}
 
 export default ProtectedRoute;
+
+// {
+//  props.render()
+//}
+//console.log("PR log ",props.loggedIn);

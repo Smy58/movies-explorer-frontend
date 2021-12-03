@@ -10,9 +10,8 @@ import InfoTooltip from './InfoTooltip';
 import NotFound from './NotFound';
 
 import apiMovies from '../utils/MoviesApi';
-
-import * as auth from '../utils/auth';
-import { patchUserInfo } from '../utils/MainApi';
+import apiAuth from '../utils/AuthApi';
+import apiMain from '../utils/MainApi';
 import { handleIdFilter } from '../utils/filter';
 
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
@@ -20,6 +19,18 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { Route, Switch, useHistory, useLocation, Redirect } from 'react-router-dom';
 import SavedMovies from './SavedMovies';
 import Login from './Login';
+
+import {
+  MAX_SCREEN,
+  MID_SCREEN,
+  MIN_SCREEN,
+  MAX_MOVIES,
+  MID_MOVIES,
+  MIN_MOVIES,
+  ADD_MAX_MOVIES,
+  ADD_MID_MOVIES,
+  ADD_MIN_MOVIES,
+} from '../constants/constants';
 
 function App() {
   const [isMenuOpen, setMenuOpen] = React.useState(false);
@@ -46,37 +57,30 @@ function App() {
   const [messageError, setMessageError] = React.useState("");
   const [goodMessage, setGoodMessage] = React.useState("");
 
+  const [isCheckingToken, setIsCheckingToken] = React.useState(true);
+
   const history = useHistory();
   const location = useLocation();
   const userInfo = React.useContext(CurrentUserContext);
 
   React.useEffect(() => {
 
-    function handleTokenCheck(){
-      if (localStorage.getItem('token')){
-        const token = localStorage.getItem('token');
-        console.log(token);
-        // проверяем токен пользователя
-        auth.checkToken(token).then((res) => {
-          
-          setCurrentUser(res);
-          console.log(currentUser);
-          if (res.data){
-            //console.log(res.data.email);
-            // если есть цель, добавляем её в стейт
-            //console.log(loggedIn + " 1");
-            handleLogin();
-            goToMainPage();
-
-          }
-          //console.log(loggedIn + " 3");
-        })
-        .catch((err) => console.log(err));
+    const token = localStorage.getItem('token');
+    // проверяем токен пользователя
+    apiAuth.checkToken(token).then((res) => {
+      setCurrentUser(res);
+      if (res.data){          
+        setLoggedIn(true);
+        setIsCheckingToken(false);
+      } else {
+        setIsCheckingToken(false);
       }
-    }
+    })
+    .catch((err) => {
+      console.log(`Ошибка при загрузке данных профиля ${err}`);
+      setIsCheckingToken(false);
+    });
 
-    handleTokenCheck();
-    
   }, [loggedIn]);
 
   function closeAllPopups(e) {
@@ -84,14 +88,12 @@ function App() {
   }
 
   function handleRegistered(name, email, password){
-    auth.register(password, email, name)
+    apiAuth.register(password, email, name)
       .then((res) => {
-        console.log(res);
         if(!res.error){
           setOK(true);
-          auth.authorize(email, password)
+          apiAuth.authorize(email, password)
               .then((data) => {
-                  //console.log(data.message);
                   if (!data.message){
                     setOK(true);
                     setGoodMessage("Вы успешно зарегистрировались!")
@@ -128,6 +130,7 @@ function App() {
 
   function handleLogin (){
     setLoggedIn(true);
+    console.log(loggedIn);
   }
   function handleLogout (){
     setLoggedIn(false);
@@ -137,13 +140,6 @@ function App() {
     localStorage.removeItem('savedMovies');
 
     history.push('/');
-  }
-
-  function goToMainPage(){
-    console.log(history.location.pathname);
-    if(history.location.pathname !== "/"){
-      history.push('/movies');
-    }
   }
 
   function handleInfoTooltip(e){
@@ -193,6 +189,9 @@ function App() {
         toggleLike(movies, cardLike, true);
       })
       .catch((err) => {
+        setOK(false);
+        setGoodMessage("Ошибка при сохранении фильма");
+        handleInfoTooltip();
         console.log(`Ошибка при сохранении фильма ${err}`);
       });
   }
@@ -214,7 +213,10 @@ function App() {
             toggleLike(movies, cardLike, false);
           })
           .catch((err) => {
-            console.log(`Ошибка при сохранении фильма ${err}`);
+            setOK(false);
+            setGoodMessage("Ошибка при удаления фильма");
+            handleInfoTooltip();
+            console.log(`Ошибка при удаления фильма ${err}`);
           });
       }
     });
@@ -279,6 +281,9 @@ function App() {
         addLikeActive(filterMovies, savedMovies);
       })
       .catch((err) => {
+        setOK(false);
+        setGoodMessage("Ошибка при загрузке карточек");
+        handleInfoTooltip();
         console.log(`Ошибка при загрузке карточек: ${err}`);
       });
   };
@@ -324,15 +329,15 @@ function App() {
 
   function handleResize() {
     const windowSize = window.innerWidth;
-    if (windowSize >= 1215) {
-      setMoviesNumber(12);
-      setDownloadMovies(3);
-    } else if (windowSize < 1280 && windowSize >= 768) {
-      setMoviesNumber(8);
-      setDownloadMovies(2);
-    } else if (windowSize < 768) {
-      setMoviesNumber(5);
-      setDownloadMovies(5);
+    if (windowSize >= MID_SCREEN) {
+      setMoviesNumber(MAX_MOVIES);
+      setDownloadMovies(ADD_MAX_MOVIES);
+    } else if (windowSize < MAX_SCREEN && windowSize >= MIN_SCREEN) {
+      setMoviesNumber(MID_MOVIES);
+      setDownloadMovies(ADD_MID_MOVIES);
+    } else if (windowSize < MIN_SCREEN) {
+      setMoviesNumber(MIN_MOVIES);
+      setDownloadMovies(ADD_MIN_MOVIES);
     }
   }
 
@@ -347,7 +352,7 @@ function App() {
 
 
   function editProfile(name, email) {
-    patchUserInfo({ name, email })
+    apiMain.patchUserInfo({ name, email })
       .then((res) => {
         setCurrentUser(res);
         setOK(true);
@@ -355,7 +360,7 @@ function App() {
         handleInfoTooltip();
       })
       .catch((err) => {
-        setOK(true);
+        setOK(false);
         setGoodMessage("Ошибка обновления");
         handleInfoTooltip();
         console.log(`Ошибка обновления ${err}`);
@@ -369,13 +374,16 @@ function App() {
           localStorage.setItem("movies", JSON.stringify(data));
         })
         .catch((err) => {
+          setOK(false);
+          setGoodMessage("Ошибка обновления карточек");
+          handleInfoTooltip();
           console.log(err);
       });
 
       apiMovies.getSaveMovies()
         .then((res) => {
           let nf = [];
-          
+
           res.data.map(item => (
             item.owner === currentUser.data._id ? nf = [ ...nf, item] : ""
           ));
@@ -395,6 +403,9 @@ function App() {
         })
         .catch((err) => {
           setSavedMovies([]);
+          setOK(false);
+          setGoodMessage("Ошибка при загрузке сохраненных фильмов");
+          handleInfoTooltip();
           console.log(`Ошибка при загрузке сохраненных фильмов ${err}`);
       });
       handleResize();
@@ -458,7 +469,7 @@ function App() {
               </>
           </Route>
           
-          <ProtectedRoute path="/movies" loggedIn={loggedIn}
+          <ProtectedRoute path="/movies" loggedIn={loggedIn} isCheckingToken={isCheckingToken}
           render={() =>(
             <>
               <Header isOpen={isMenuOpen} onMenu={handleMenuClick}/>
@@ -474,16 +485,21 @@ function App() {
             </>
           )} />
 
-          <ProtectedRoute path="/saved-movies" loggedIn={loggedIn} 
+          <ProtectedRoute path="/saved-movies" loggedIn={loggedIn} isCheckingToken={isCheckingToken}
           render={() =>(
             <>
               <Header isOpen={isMenuOpen}/>
-              <SavedMovies movies={savedMovies} onLikeClick={handleLikeClick} handleRequest={handleFilterSearchSavedMovie} shortMovieToggle={shortMovieToggle} shortVideos={shortSaveVideos} notShortVideos={notShortSaveVideos}/>
+              <SavedMovies movies={savedMovies}
+                           onLikeClick={handleLikeClick}
+                           handleRequest={handleFilterSearchSavedMovie}
+                           shortMovieToggle={shortMovieToggle}
+                           shortVideos={shortSaveVideos}
+                           notShortVideos={notShortSaveVideos}/>
               <Footer/>
             </>
           )} />
 
-          <ProtectedRoute path="/profile" loggedIn={loggedIn}
+          <ProtectedRoute path="/profile" loggedIn={loggedIn} isCheckingToken={isCheckingToken}
           render={() =>(
             <>
               <Header/>
@@ -492,16 +508,20 @@ function App() {
           )} />
 
           <Route path="/signin">
-            {loggedIn ? (
-              <Redirect to="/" />
+            {isCheckingToken ? (
+              ""
+            ) : loggedIn ? (
+              <Redirect to="/movies" />
             ) : (
               <Login handleLogin={handleLogin} onRegistered={handleRegistered} onInfoTooltip={handleInfoTooltip} history={history}/>
             )}
           </Route>
           
           <Route path="/signup">
-            {loggedIn ? (
-              <Redirect to="/" />
+            {isCheckingToken ? (
+              ""
+            ) : loggedIn ? (
+              <Redirect to="/movies" />
             ) : (
               <Register handleLogin={handleLogin} onInfoTooltip={handleInfoTooltip} onRegistered={handleRegistered} history={history}/>
             )}
