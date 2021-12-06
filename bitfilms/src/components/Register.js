@@ -1,32 +1,73 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../images/logo.svg';
 
-function Register(){
+function Register(props){
+    const [val, setVal] = React.useState({ name: '', email: '', password: '' });
+    const [errors, setErrors] = React.useState({});
+    const [isValid, setIsValid] = React.useState(false);
+
+    const reset = React.useCallback(
+        (newValues = {}, newErrors = {}, newIsValid = false) => {
+            setVal(newValues);
+            setErrors(newErrors);
+            setIsValid(newIsValid);
+        },
+        [setVal, setErrors, setIsValid]
+    );
+
+    React.useEffect(() => reset({}), [reset]);
+
+    function handleChange(e){
+        const {name, value} = e.target;
+        setVal({
+          [name]: value
+        });
+
+        if (e.target.validity.patternMismatch) {
+            name === "email" && e.target.setCustomValidity("Введите корректный email");
+        } else {
+            e.target.setCustomValidity("");
+        }
+
+        setVal({ ...val, [name]: value });
+        setErrors({ ...errors, [name]: e.target.validationMessage });
+        setIsValid(e.target.closest("form").checkValidity());
+    }
+
+    function handleSubmit(e){
+        e.preventDefault();
+        console.log(val.password + " " + val.email + " " + val.name);
+        props.onRegistered(val.name, val.email, val.password);
+    }
+
+
+    console.log(errors);
     return (
-        <div class="register">
-            <div class="register-header">
-                <img src={logo} alt="Лого" class="logo"></img>
-                <h2 class="register-header__title">Добро пожаловать!</h2>
+        <div className="register">
+            <div className="register-header">
+                <Link to="/"><img src={logo} alt="Лого" className="logo"></img></Link>
+                <h2 className="register-header__title">Добро пожаловать!</h2>
             </div>
-            <form action="" class="form form_type_register">
-                <fieldset class="form__set">
-                    <label class="form__field">Имя
-                        <input id="name-input" name="name" class="form__input" type="text" placeholder="Название" required minlength='2' maxlength='30'></input>
-                        <span class='form__input-error' id='name-input-error'></span>
+            <form onSubmit={handleSubmit} className="form form_type_register">
+                <fieldset className="form__set">
+                    <label className="form__field">Имя
+                        <input id="name-input" name="name" className={`form__input ${errors.name ? "form__input_erfoc" : "form__input_foc"}`} type="text" placeholder="Название" onChange={handleChange} required minLength={2} maxLength={30}></input>
+                        <span className='form__input-error' id='name-input-error'>{errors.name}</span>
                     </label>
-                    <label class="form__field">E-mail
-                        <input id="email-input" name="email" class="form__input" type="email" placeholder="Email" required></input>
-                        <span class='form__input-error' id='email-input-error'></span>
+                    <label className="form__field">E-mail
+                        <input id="email-input" name="email" className={`form__input ${errors.email ? "form__input_erfoc" : "form__input_foc"}`} type="email" placeholder="Email" onChange={handleChange} required minLength={2} maxLength={30} pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"></input>
+                        <span className='form__input-error' id='email-input-error'>{errors.email}</span>
                     </label>
-                    <label class="form__field">Пароль
-                        <input id="password-input" name="password" class="form__input" type="password" placeholder="Пароль" required></input>
-                        <span class='form__input-error' id='password-input-error'></span>
+                    <label className="form__field">Пароль
+                        <input id="password-input" name="password" className={`form__input ${errors.password ? "form__input_erfoc" : "form__input_foc"}`} type="password" placeholder="Пароль" onChange={handleChange} required minLength={3}></input>
+                        <span className='form__input-error' id='password-input-error'>{errors.password}</span>
                     </label>
-                    <button class="form__submit" type="submit">Зарегистрироваться</button>
+                    <button onSubmit={handleSubmit} className={`${!isValid ? "form__submit_disabled" : "form__submit"}`} type="submit">Зарегистрироваться</button>
                 </fieldset>
             </form>
-            <div class="register__signin">
-                <p>Уже зарегистрированы? <a class="register__login-link">Войти</a> </p>
+            <div className="register__signin">
+                <p>Уже зарегистрированы? <Link to="/signin" className="register__login-link">Войти</Link> </p>
             </div>
         </div>
     );

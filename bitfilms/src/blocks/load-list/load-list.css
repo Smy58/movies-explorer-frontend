@@ -15,3 +15,7 @@
     margin-top: 50px;
     margin-bottom: 80px;
 }
+
+.load-list_hidden {
+    display: none;
+}

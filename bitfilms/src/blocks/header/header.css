@@ -6,3 +6,7 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.header_main-page {
+    background-color: #5C5C5C;
+}

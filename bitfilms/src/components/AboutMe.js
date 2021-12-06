@@ -18,8 +18,8 @@ function AboutMe() {
                     </div>
 
                     <div className="student__social-links">
-                        <a href="#" className="student__social-link">Facebook</a>
-                        <a href="#" className="student__social-link">Github</a>
+                        <a href="https://ru-ru.facebook.com" className="student__social-link">Facebook</a>
+                        <a href="https://github.com" className="student__social-link">Github</a>
                     </div>
                 </div>
                 <img src={ava} alt="Аватар" className="student__ava"></img>

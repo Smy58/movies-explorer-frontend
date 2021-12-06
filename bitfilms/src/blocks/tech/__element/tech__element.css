@@ -23,7 +23,7 @@
     margin: 0;
 }
 
-@media screen and (max-width: 430px){
+@media screen and (max-width: 700px){
     .tech__element {
         width: 84px;
         height: 57px;

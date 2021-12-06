@@ -4,14 +4,16 @@ import AboutProject from './AboutProject';
 import Promo from './Promo';
 import Techs from './Techs';
 
-function Main() {
+function Main(props) {
     return (
-        <div className='page'>
-            <Promo/>
-            <AboutProject/>
-            <Techs/>
-            <AboutMe/>
-        </div>
+        <>
+            <div className='page'>
+                <Promo loggedIn={props.loggedIn}/>
+                <AboutProject/>
+                <Techs/>
+                <AboutMe/>
+            </div>
+        </>
     );
 }
 
