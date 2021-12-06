@@ -8,6 +8,7 @@ import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
 import InfoTooltip from './InfoTooltip';
 import NotFound from './NotFound';
+import Preloader from './Preloader';
 
 import apiMovies from '../utils/MoviesApi';
 import apiAuth from '../utils/AuthApi';
@@ -69,6 +70,8 @@ function App() {
     // проверяем токен пользователя
     apiAuth.checkToken(token).then((res) => {
       setCurrentUser(res);
+      console.log(currentUser);
+      console.log(res);
       if (res.data){          
         setLoggedIn(true);
         setIsCheckingToken(false);
@@ -87,6 +90,25 @@ function App() {
     setInfoTooltip(false);
   }
 
+  function handleLog(username, password){
+    apiAuth.authorize(username, password)
+        .then((data) => {
+            //console.log(data.message);
+            if (!data.message){
+                console.log("to movies");
+                console.log(data);
+
+                handleLogin();
+                history.push('/movies');
+            }else{
+                setOK(false);
+                setMessageError(`Ошибка при авторизации`);
+                handleInfoTooltip();
+            }
+        })
+        .catch(err => console.log(err));
+  }
+
   function handleRegistered(name, email, password){
     apiAuth.register(password, email, name)
       .then((res) => {
@@ -101,6 +123,7 @@ function App() {
                     history.push('/movies');
                   }else{
                     setOK(false);
+                    setMessageError(`Ошибка при регистрации`);
                     handleInfoTooltip();
                   }
               })
@@ -130,7 +153,6 @@ function App() {
 
   function handleLogin (){
     setLoggedIn(true);
-    console.log(loggedIn);
   }
   function handleLogout (){
     setLoggedIn(false);
@@ -190,7 +212,7 @@ function App() {
       })
       .catch((err) => {
         setOK(false);
-        setGoodMessage("Ошибка при сохранении фильма");
+        setMessageError("Ошибка при сохранении фильма");
         handleInfoTooltip();
         console.log(`Ошибка при сохранении фильма ${err}`);
       });
@@ -214,7 +236,7 @@ function App() {
           })
           .catch((err) => {
             setOK(false);
-            setGoodMessage("Ошибка при удаления фильма");
+            setMessageError("Ошибка при удаления фильма");
             handleInfoTooltip();
             console.log(`Ошибка при удаления фильма ${err}`);
           });
@@ -277,12 +299,19 @@ function App() {
   const handleFilterSearchMovie = (query) => {
     apiMovies.getInitialCards()
       .then((res) => {
+        setIsCheckingToken(true);
+        return res;
+      })
+      .then((res) => {
         const filterMovies = handleFilter(res, query);
         addLikeActive(filterMovies, savedMovies);
       })
+      .then(() => {
+        setIsCheckingToken(false);
+      })
       .catch((err) => {
         setOK(false);
-        setGoodMessage("Ошибка при загрузке карточек");
+        setMessageError("Ошибка при загрузке карточек");
         handleInfoTooltip();
         console.log(`Ошибка при загрузке карточек: ${err}`);
       });
@@ -361,56 +390,58 @@ function App() {
       })
       .catch((err) => {
         setOK(false);
-        setGoodMessage("Ошибка обновления");
+        setMessageError("Ошибка обновления");
         handleInfoTooltip();
         console.log(`Ошибка обновления ${err}`);
       });
   }
 
   React.useEffect(() => {
-    if(loggedIn){
+    if(loggedIn && currentUser.data){
       apiMovies.getInitialCards()
         .then((data) => {
           localStorage.setItem("movies", JSON.stringify(data));
         })
+        .then(() => {
+          apiMovies.getSaveMovies()
+          .then((res) => {
+            let nf = [];
+
+            res.data.map(item => (
+              item.owner === currentUser.data._id ? nf = [ ...nf, item] : ""
+            ));
+            res.data = nf;
+            localStorage.setItem("savedMovies", JSON.stringify(res));
+
+            const saveMovieSearch = JSON.parse(localStorage.getItem("savedMovies")).data;
+            saveMovieSearch !== null
+              ? setSavedMovies(saveMovieSearch)
+              : setSavedMovies([]);
+
+            const movieSearch = JSON.parse(localStorage.getItem("movies"));
+
+            addLikeActive(movieSearch, saveMovieSearch);
+
+          })
+          .catch((err) => {
+            setSavedMovies([]);
+            setOK(false);
+            setMessageError("Ошибка при загрузке сохраненных фильмов");
+            handleInfoTooltip();
+            console.log(`Ошибка при загрузке сохраненных фильмов ${err}`);
+          });
+        })
         .catch((err) => {
           setOK(false);
-          setGoodMessage("Ошибка обновления карточек");
+          setMessageError("Ошибка обновления карточек");
           handleInfoTooltip();
           console.log(err);
       });
 
-      apiMovies.getSaveMovies()
-        .then((res) => {
-          let nf = [];
-
-          res.data.map(item => (
-            item.owner === currentUser.data._id ? nf = [ ...nf, item] : ""
-          ));
-          res.data = nf;
-          localStorage.setItem("savedMovies", JSON.stringify(res));
-          //console.log(res);
-          //console.log(JSON.parse(localStorage.getItem("savedMovies")));
-          const saveMovieSearch = JSON.parse(localStorage.getItem("savedMovies")).data;
-          saveMovieSearch !== null
-            ? setSavedMovies(saveMovieSearch)
-            : setSavedMovies([]);
-
-          const movieSearch = JSON.parse(localStorage.getItem("movies"));
-
-          addLikeActive(movieSearch, saveMovieSearch);
-
-        })
-        .catch((err) => {
-          setSavedMovies([]);
-          setOK(false);
-          setGoodMessage("Ошибка при загрузке сохраненных фильмов");
-          handleInfoTooltip();
-          console.log(`Ошибка при загрузке сохраненных фильмов ${err}`);
-      });
+      
       handleResize();
     }
-  }, [loggedIn, location]);
+  }, [currentUser, location]);
 
   React.useEffect(() => {
     window.addEventListener("resize", handleResize);
@@ -426,7 +457,6 @@ function App() {
   }, [shortMovie, shortSavedMovie]);
 
   React.useEffect(() => {
-    // console.log(movies.slice(0, moviesNumber));
     setMoviesList(movies.slice(0, moviesNumber));
     setCurrenCount(moviesNumber);
   }, [movies, moviesNumber]);
@@ -448,7 +478,7 @@ function App() {
   }, [toggleLike]);
 
   React.useEffect(() => {
-
+    
   }, [currentUser]);
 
   return (
@@ -509,17 +539,17 @@ function App() {
 
           <Route path="/signin">
             {isCheckingToken ? (
-              ""
+              <Preloader isCheckingToken={isCheckingToken} />
             ) : loggedIn ? (
               <Redirect to="/movies" />
             ) : (
-              <Login handleLogin={handleLogin} onRegistered={handleRegistered} onInfoTooltip={handleInfoTooltip} history={history}/>
+              <Login handleLogin={handleLogin} onInfoTooltip={handleInfoTooltip} history={history} handleLog={handleLog}/>
             )}
           </Route>
           
           <Route path="/signup">
             {isCheckingToken ? (
-              ""
+              <Preloader isCheckingToken={isCheckingToken} />
             ) : loggedIn ? (
               <Redirect to="/movies" />
             ) : (

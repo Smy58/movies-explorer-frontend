@@ -27,23 +27,24 @@ class MainApi{
         };
     }
 
+    resCheck(res){
+        return res.ok ? res.json() : Promise.reject(res);
+    }
+
     patchUserInfo({ name, email }) {
         console.log("! " + name + " " + email);
-        return fetch(`${this._baseUrl}/users/me`, {
-            method: "PATCH",
-            credentials: "include",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-            body: JSON.stringify({
-                name,
-                email,
-            }),
-        }).then((res) => {
-            return res.json();
-        })
+
+        let head = this._headersPatch;
+        head.headers.authorization = `Bearer ${localStorage.getItem('token')}`;
+        head.body = JSON.stringify({
+            name,
+            email,
+        });
+
+        return fetch(`${this._baseUrl}/users/me`, head)
+        .then((res) => {
+            return this.resCheck(res);
+        });
     }
 }
 

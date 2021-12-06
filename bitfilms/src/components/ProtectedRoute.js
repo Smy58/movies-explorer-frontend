@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from "react-router-dom";
+import Preloader from './Preloader';
 
 const ProtectedRoute = ({ component: Component, ...props  }) => {
 
@@ -9,7 +10,7 @@ const ProtectedRoute = ({ component: Component, ...props  }) => {
       {
       () => 
         props.isCheckingToken ?
-          ""
+        <Preloader isCheckingToken={props.isCheckingToken} />
         :
           // console.log(1)
           !props.loggedIn ? <Redirect to="/" /> : props.render()

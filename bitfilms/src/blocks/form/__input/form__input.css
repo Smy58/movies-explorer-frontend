@@ -21,6 +21,10 @@
     margin-bottom: 24px;
 }
 
-.form__input:focus {
+.form__input_erfoc:focus {
+    border-bottom-color: red;
+}
+
+.form__input_foc:focus {
     border-bottom-color: #2BE080;
 }

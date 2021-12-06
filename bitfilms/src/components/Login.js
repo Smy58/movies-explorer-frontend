@@ -26,8 +26,11 @@ function Login(props) {
             [name]: value
         });
 
+        console.log("+ ", e.target.validity.patternMismatch);
         if (e.target.validity.patternMismatch) {
-            name === "email" && e.target.setCustomValidity("Введите корректный email");
+            if (name === "email" || name === "username"){
+                e.target.setCustomValidity("Введите корректный email");
+            }
         } else {
             e.target.setCustomValidity("");
         }
@@ -43,41 +46,29 @@ function Login(props) {
         if (!val.username || !val.password){
             return;
         }
-    
-        apiAuth.authorize(val.username, val.password)
-        .then((data) => {
-            //console.log(data.message);
-            if (!data.message){
-                console.log("to movies");
-                setVal({email: '', password: ''});
-
-                props.handleLogin();
-                props.history.push('/movies');
-            }else{
-                props.onRegistered(false);
-                props.onInfoTooltip();
-            }
-        })
-        .catch(err => console.log(err));
+        props.handleLog(val.username, val.password);
+        setVal({email: '', password: ''});
     
     }
 
     console.log(isValid);
+    console.log(errors);
+
     return (
         <div className="login">
             <div className="login-header">
-                <img src={logo} alt="Лого" className="logo"></img>
+                <Link to="/"><img src={logo} alt="Лого" className="logo"></img></Link>
                 <h2 className="login-header__title">Добро пожаловать!</h2>
             </div>
             <form onSubmit={handleSubmit} className="form form_type_login">
                 <fieldset className="form__set">
                     <label className="form__field">E-mail
-                        <input onChange={handleChange} id="email-input" name="username" className="form__input" type="email" placeholder="Email" required></input>
-                        <span className='form__input-error' id='email-input-error'></span>
+                        <input onChange={handleChange} id="email-input" name="username" className={`form__input ${errors.username ? "form__input_erfoc" : "form__input_foc"}`} type="email" placeholder="Email" required minLength={2} maxLength={30} pattern="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"></input>
+                        <span className='form__input-error' id='email-input-error'>{errors.username}</span>
                     </label>
                     <label className="form__field">Пароль
-                        <input onChange={handleChange} id="password-input" name="password" className="form__input" type="password" placeholder="Пароль" required></input>
-                        <span className='form__input-error' id='password-input-error'></span>
+                        <input onChange={handleChange} id="password-input" name="password" className={`form__input ${errors.password ? "form__input_erfoc" : "form__input_foc"}`} type="password" placeholder="Пароль" required minLength={3}></input>
+                        <span className='form__input-error' id='password-input-error'>{errors.password}</span>
                     </label>
                     <button onSubmit={handleSubmit} className={`${!isValid ? "form__submit_disabled" : "form__submit"}`} type="submit" disabled={!isValid}>Войти</button>
                 </fieldset>

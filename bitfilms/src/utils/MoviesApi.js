@@ -27,10 +27,14 @@ class MoviesApi {
         };
     }
 
+    resCheck(res){
+        return res.ok ? res.json() : Promise.reject(res);
+    }
+
     getInitialCards(){
         return fetch(this._baseUrl, this._headersGet)
             .then(res => {
-                return res.ok ? res.json() : Promise.reject(res);
+                return this.resCheck(res);
             });
     }
 
@@ -41,15 +45,10 @@ class MoviesApi {
         const trailer = movie.trailerLink;
         const thumbnail = `https://api.nomoreparties.co${movie.image.formats.thumbnail.url}`;
         const movieId = movie.id;
-        return fetch(`${apiUrl}/movies`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-          body: JSON.stringify({
+
+        let head = this._headersPost;
+        head.headers.authorization = `Bearer ${localStorage.getItem('token')}`;
+        head.body = JSON.stringify({
             country,
             director,
             duration,
@@ -61,37 +60,31 @@ class MoviesApi {
             nameEN,
             thumbnail,
             movieId,
-          }),
-        }).then((res) => {
-            return res.ok ? res.json() : Promise.reject(res);
+          });
+
+        return fetch(`${apiUrl}/movies`, head )
+        .then((res) => {
+            return this.resCheck(res);
         });
     }
 
     deleteSavedMovie = (movieId) => {
-        return fetch(`${apiUrl}/movies/${movieId}`, {
-          method: "DELETE",
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }).then((res) => {
-            return res.ok ? res.json() : Promise.reject(res);
+        let head = this._headersDelete;
+        head.headers.authorization = `Bearer ${localStorage.getItem('token')}`;
+
+        return fetch(`${apiUrl}/movies/${movieId}`, head)
+        .then((res) => {
+            return this.resCheck(res);
         });
     };
 
     getSaveMovies() {
-        return fetch(`${apiUrl}/movies`, {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }).then((res) => {
-            return res.ok ? res.json() : Promise.reject(res);
+        let head = this._headersGet;
+        head.headers.authorization = `Bearer ${localStorage.getItem('token')}`;
+
+        return fetch(`${apiUrl}/movies`, head)
+        .then((res) => {
+            return this.resCheck(res);
         });
       }
     
@@ -99,6 +92,7 @@ class MoviesApi {
 
 const apiMovies = new MoviesApi({
     baseUrl: apiMoviesUrl,
+    credentials: "include",
     headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

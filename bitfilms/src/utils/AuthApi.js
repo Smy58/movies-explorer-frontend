@@ -27,30 +27,35 @@ class AuthApi{
     };
   }
 
+  resCheck(res){
+    return res.ok ? res.json() : Promise.reject(res);
+  }
+
+// {
+//   method: 'POST',
+//   headers: {
+//     'Accept': 'application/json',
+//     'Content-Type': 'application/json'
+//   },
+//   body: JSON.stringify({email, password, name})
+// }
+
   register(password, email, name){
-    return fetch(`${this._baseUrl}/signup`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({email, password, name})
-    })
+    let head = this._headersPost;
+    head.body = JSON.stringify({email, password, name});
+    return fetch(`${this._baseUrl}/signup`, head)
     .then((res) => {
-      return res.ok ? res.json() : Promise.reject(res);
+      return this.resCheck(res);
     })
   }
 
   authorize(email, password){
-    return fetch(`${this._baseUrl}/signin`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({email, password})
+    let head = this._headersPost;
+    head.body = JSON.stringify({email, password});
+    return fetch(`${this._baseUrl}/signin`, head)
+    .then((res) => {
+      return this.resCheck(res);
     })
-    .then((response => response.json()))
     .then((data) => {
   
       localStorage.setItem('token', data.token);
@@ -62,15 +67,12 @@ class AuthApi{
 
   checkToken (token) {
     console.log(token);
-    return fetch(`${this._baseUrl}/users/me`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${token}`,
-      }
+    let head = this._headersGet;
+    head.headers.authorization = `Bearer ${token}`;
+    return fetch(`${this._baseUrl}/users/me`, head)
+    .then((res) => {
+      return this.resCheck(res);
     })
-    .then(res => res.json())
     .then(data => {
       return data;
     });

@@ -1,0 +1,5 @@
+.form__input-error {
+    color: red;
+    position: relative;
+    bottom: 20px;
+}
